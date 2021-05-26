@@ -8,6 +8,7 @@ use Cookies;
 use App\Models\message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Models\GetRefer;
 
 class Messager extends Controller
 {
@@ -32,12 +33,16 @@ class Messager extends Controller
             if (strlen($request->password) >= 5) {
 
 
-
+                $hsh =  bin2hex(random_bytes(16));
                 $user = new user;
                 $user->username = $request->username;
                 $user->password = Hash::make($request->password);
-                $user->aid = $request->link;
+                $user->aid = $hsh;
                 $user->save();
+                $refer = new GetRefer;
+                $refer->aid = $hsh;
+                $refer->refer = $request->link;
+                $refer->save();
                 return response()->json(array("aid" => $user->aid));
             } else return response()->json(array("error" => "bad login or password"));
         } else return response()->json(array("error" => "bad login or password"));
@@ -48,7 +53,7 @@ class Messager extends Controller
 
         $site = $request->site;
         if ($request->site && $request->name && $request->email) {
-            if (message::latest()->get()) {
+            if (message::all()) {
                 $id = message::latest()->first();
             } else $id = 1;
 
@@ -64,16 +69,15 @@ class Messager extends Controller
     }
 
 
-    //Получение сообщений  для администрации
-    public function getMessageAdmin(Request $request)
-    {
+    // public function getMessageAdmin(Request $request)
+    // {
 
-        $admin = $request->admin;
-        if ($admin != null) {
-            $a = Message::where('refer', $admin)->first();
-        }
-        return response()->json($a);
-    }
+    //     $admin = $request->admin;
+    //     if ($admin != null) {
+    //         $a = Message::where('refer', $admin)->first();
+    //     }
+    //     return response()->json($a);
+    // }
     //API для показа сообщения работает только чере пост. Используется uid.
     public function messagesu(Request $request)
     {
@@ -82,10 +86,13 @@ class Messager extends Controller
         if (!$u) return response()->json(array('error' => 'bad secret key'));
         return json_decode($u->messages);
     }
+    //Получение сообщений  для администрации
     public function messagesa(Request $request)
     {
-        $u = message::where('to', $request->site)->get();
-
+        $me = GetRefer::where('aid', $request->aid)->first();
+        $u = message::where('to', $me->refer)->get();
+        //dd($u);
+        // dd($me);
         if (!$u) return response()->json(array('error' => 'bad aid key'));
         else
             return response()->json($u);
