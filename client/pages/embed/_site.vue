@@ -2,17 +2,23 @@
   <v-app>
     <v-container>
       <v-layout>
-        <v-card class="elevation-12" width="350">
-          <v-toolbar dark color="primary darken-1">
-            <v-toolbar-title>Тех-поддержка </v-toolbar-title>
+        <v-card class="elevation-12" width="350" id="dg-main">
+          <v-toolbar
+            dark
+            color="primary darken-1"
+            id="dg-area"
+            oncontextmenu="return false"
+          >
+            <v-toolbar-title>{{ $route.params.site }} </v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-btn icon @click="show = !show">
+            <v-btn icon @click="show_element">
               <v-icon>{{
                 show ? "mdi-chevron-up" : "mdi-chevron-down"
               }}</v-icon>
             </v-btn>
           </v-toolbar>
           <!-- Сообщения -->
+
           <v-card id="area" class="#F5F5DC" v-show="show">
             <!-- Сообщение админа -->
             <v-card color="#fff" class="elevation-10" id="admin_mes">
@@ -121,12 +127,33 @@
   height: 20px;
   width: 10px;
 }
+.no-shadow {
+  box-shadow: none;
+}
+
+.v-application--wrap {
+  flex: none;
+  min-height: unset;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
 </style>
 
 <script>
 export default {
   data: () => ({
     show: false
-  })
+  }),
+  layout: "empty",
+  mounted() {
+    $("#dg-main").draggable({ handle: "#dg-area", containment: "document" });
+  },
+  methods: {
+    show_element() {
+      this.show = !this.show;
+      // if ()
+    }
+  }
 };
 </script>
