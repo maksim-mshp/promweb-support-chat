@@ -65,7 +65,7 @@
              <!-- //////////////////
             ////////////////////// -->
          <!-- Заполнение пользователя -->
-            <v-card color= #F5F5DC v-show="show"> 
+            <v-card color= #fff v-show="show"> 
                 
                 <v-form>
                 <v-text-field id = "name" counter="10" label="ФИО" required clearable></v-text-field>
