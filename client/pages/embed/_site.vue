@@ -2,16 +2,21 @@
   <v-app>
     <v-container>
       <v-layout>
-        <v-card class="elevation-12" width="350" id="dg-main">
+        <v-card
+          class="elevation-12"
+          width="350"
+          id="dg-main"
+          style="width: 350px; left: 1165px; top: 412px;"
+        >
           <v-toolbar
             dark
             color="primary darken-1"
             id="dg-area"
             oncontextmenu="return false"
           >
-            <v-toolbar-title>{{ site }} </v-toolbar-title>
+            <v-toolbar-title>Консультант</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-btn icon @click="show_element">
+            <v-btn icon @click="show_element()">
               <v-icon>{{
                 show ? "mdi-chevron-up" : "mdi-chevron-down"
               }}</v-icon>
@@ -46,7 +51,7 @@
                   autofocus
                   single-line
                   type="text"
-                  label="Write a message..."
+                  label="Сообщение"
                   @click:append="sendMessage()"
                   @keyup.enter="sendMessage()"
                 />
@@ -326,8 +331,8 @@ export default {
     site: "",
     alert: "",
 
-    firstname: "Максим",
-    email: "maksim@cherny.sh",
+    firstname: "",
+    email: "",
 
     messages: [],
     last: "",
@@ -345,8 +350,18 @@ export default {
   layout: "empty",
   methods: {
     show_element() {
-      this.show = !this.show;
-      // if ()
+      if (!this.show) {
+        this.show = !this.show;
+
+        setTimeout(function() {
+          document.querySelector("#dg-main").style.top = "239px";
+      }, 5);
+        } else {
+          this.show = !this.show;
+          setTimeout(function() {
+          document.querySelector("#dg-main").style.top = "412px";
+      }, 5);
+        }
     },
     update_messages() {
       if (this.auth_state) {
@@ -434,7 +449,7 @@ export default {
           self.update_messages(); //Thing you wanted to run as non-window 'this'
         };
       })(this),
-      300 //normal interval, 'this' scope not impacted here.
+      2000 //normal interval, 'this' scope not impacted here.
     );
   }
 };
